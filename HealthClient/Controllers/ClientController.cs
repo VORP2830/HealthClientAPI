@@ -1,4 +1,5 @@
 using Clientes.DTOs;
+using Clientes.Pagination;
 using Clientes.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,11 @@ namespace Clientes.Controllers
             _clientService = clientService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPaged([FromQuery] PageParams pageParams)
         {
             try
             {
-                var result = await _clientService.GetAll();
+                var result = await _clientService.GetAllPaged(pageParams);
                 if(result == null) return NoContent();
                 return Ok(result);
             }

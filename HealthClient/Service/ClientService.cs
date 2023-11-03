@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using AutoMapper;
 using Clientes.DTOs;
 using Clientes.Entities;
+using Clientes.Pagination;
 using Clientes.Repository.Interfaces;
 using Clientes.Service.Interfaces;
 
@@ -20,6 +21,13 @@ namespace Clientes.Service
         {
             IEnumerable<Client> clients = await _unitOfWork.ClientRepository.GetAll();
             return _mapper.Map<IEnumerable<ClientDTO>>(clients);
+        }
+        public async Task<PageList<ClientDTO>> GetAllPaged(PageParams pageParams)
+        {
+            PageList<Client> clientPaged = await _unitOfWork.ClientRepository.GetAllPaged(pageParams);
+            if (clientPaged == null) return null;
+            IEnumerable<ClientDTO> clientDTOs = _mapper.Map<IEnumerable<ClientDTO>>(clientPaged.Items);
+            return new PageList<ClientDTO>(clientDTOs.ToList(), clientPaged.TotalCount, clientPaged.CurrentPage, clientPaged.PageSize);
         }
         public async Task<ClientDTO> GetById(long id)
         {
